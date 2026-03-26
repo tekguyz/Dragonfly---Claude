@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { COPY } from '@/constants/copy';
 import { BRAND } from '@/constants/brand';
-import { GoogleGenAI } from '@google/genai';
 import { useLanguage } from '@/context/LanguageContext';
 
 type Message = {
@@ -126,40 +125,29 @@ export default function ChatWidget() {
     setHasError(false);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
-      
       const history = messages.map(m => ({
         role: m.role === 'user' ? 'user' : 'model',
         parts: [{ text: m.content }]
       }));
 
-      const chat = ai.chats.create({
-        model: 'gemini-3-flash-preview',
-        config: {
-          systemInstruction: SYSTEM_INSTRUCTION + `\n\nIMPORTANT: The user is currently browsing the website in ${language === 'es' ? 'Spanish' : 'English'}. Please respond in ${language === 'es' ? 'Spanish' : 'English'}.`,
-          temperature: 0.7,
-        }
-      });
-
-      // We need to send the history to the chat instance if there are previous messages
-      // Since @google/genai chat doesn't take history in create(), we can just use generateContent
-      // with the full history array.
-      
       const contents = [
         ...history,
         { role: 'user', parts: [{ text: trimmed }] }
       ];
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: contents as any,
-        config: {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: contents,
           systemInstruction: SYSTEM_INSTRUCTION + `\n\nIMPORTANT: The user is currently browsing the website in ${language === 'es' ? 'Spanish' : 'English'}. Please respond in ${language === 'es' ? 'Spanish' : 'English'}.`,
           temperature: 0.7,
-        }
+        }),
       });
 
-      const replyText = response.text || t('chat.error');
+      if (!response.ok) throw new Error('Failed to generate response');
+      const data = await response.json();
+      const replyText = data.text || t('chat.error');
 
       const assistantMsg: Message = {
         id: (Date.now() + 1).toString(),
