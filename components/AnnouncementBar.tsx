@@ -8,7 +8,7 @@ export default function AnnouncementBar() {
 
   return (
     <div className="h-[44px] w-full bg-gradient-to-r from-accent via-accent-dark to-accent overflow-hidden flex items-center relative">
-      <div className="whitespace-nowrap flex animate-[marquee_20s_linear_infinite] md:animate-[marquee_40s_linear_infinite]">
+      <div className="whitespace-nowrap flex w-max animate-[marquee_20s_linear_infinite] md:animate-[marquee_40s_linear_infinite]">
         <span className="text-background font-semibold text-[11px] md:text-[13px] uppercase tracking-[0.1em] px-4">
           {content}
         </span>

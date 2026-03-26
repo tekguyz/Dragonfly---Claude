@@ -75,7 +75,7 @@ export default function Navbar() {
                 key={link.name}
                 href={link.href}
                 className={`relative text-sm font-medium transition-colors duration-300 group ${
-                  activeSection === link.href.substring(1) ? 'text-primary' : 'text-off-white hover:text-primary'
+                  activeSection === link.href.substring(1) ? 'text-primary' : 'text-white hover:text-primary'
                 }`}
               >
                 {link.name}

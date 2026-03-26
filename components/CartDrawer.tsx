@@ -2,6 +2,7 @@
 
 import { useCart } from '@/context/CartContext';
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { openWhatsAppOrder } from '@/utils/buildWhatsAppMessage';
 import { BRAND } from '@/constants/brand';
 import { useLanguage } from '@/context/LanguageContext';
@@ -105,51 +106,57 @@ export default function CartDrawer() {
               </button>
             </div>
           ) : (
-            items.map(item => (
-              <div 
-                key={item.id} 
-                className={`flex items-center gap-4 bg-surface-light rounded-2xl p-4 border border-border-subtle hover:border-primary/30 transition-all duration-300 ease-in-out overflow-hidden
-                  ${removingIds.has(item.id) ? 'max-h-0 opacity-0 py-0 my-0 border-0' : 'max-h-[140px] opacity-100'}
-                `}
-              >
-                <div className="w-14 h-14 rounded-xl bg-background flex items-center justify-center text-3xl shrink-0 border border-border-subtle">
-                  {item.emoji}
-                </div>
-                
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-white font-bold text-base truncate mb-0.5">{t(`menu.items.${item.id}.name`)}</h4>
-                  <p className="text-textMuted text-xs font-medium uppercase tracking-wider">{t(`menu.tabs.${item.category}`)}</p>
-                </div>
+            <AnimatePresence initial={false}>
+              {items.map(item => (
+                <motion.div 
+                  key={item.id}
+                  initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+                  animate={{ opacity: 1, height: 'auto', marginBottom: 20 }}
+                  exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className={`flex items-center gap-4 bg-surface-light rounded-2xl p-4 border border-border-subtle hover:border-primary/30 transition-all duration-300 ease-in-out overflow-hidden
+                    ${removingIds.has(item.id) ? 'max-h-0 opacity-0 py-0 my-0 border-0' : 'max-h-[140px] opacity-100'}
+                  `}
+                >
+                  <div className="w-14 h-14 rounded-xl bg-background flex items-center justify-center text-3xl shrink-0 border border-border-subtle">
+                    {item.emoji}
+                  </div>
+                  
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-white font-bold text-base truncate mb-0.5">{t(`menu.items.${item.id}.name`)}</h4>
+                    <p className="text-textMuted text-xs font-medium uppercase tracking-wider">{t(`menu.tabs.${item.category}`)}</p>
+                  </div>
 
-                <div className="flex items-center shrink-0 gap-3">
-                  <div className="flex items-center bg-background rounded-full border border-border-subtle p-1">
+                  <div className="flex items-center shrink-0 gap-3">
+                    <div className="flex items-center bg-background rounded-full border border-border-subtle p-1">
+                      <button 
+                        onClick={() => item.quantity > 1 ? updateQuantity(item.id, item.quantity - 1) : handleRemove(item.id)}
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-white hover:bg-red-500/10 hover:text-red-500 transition-colors text-lg"
+                        aria-label={t('cart.drawer.quantity.decrease')}
+                      >
+                        −
+                      </button>
+                      <span className="text-white font-bold min-w-[32px] text-center text-sm">{item.quantity}</span>
+                      <button 
+                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        className="w-8 h-8 rounded-full bg-primary text-black flex items-center justify-center hover:scale-105 transition-transform text-lg"
+                        aria-label={t('cart.drawer.quantity.increase')}
+                      >
+                        +
+                      </button>
+                    </div>
                     <button 
-                      onClick={() => item.quantity > 1 ? updateQuantity(item.id, item.quantity - 1) : handleRemove(item.id)}
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-white hover:bg-red-500/10 hover:text-red-500 transition-colors text-lg"
-                      aria-label={t('cart.drawer.quantity.decrease')}
+                      onClick={() => handleRemove(item.id)}
+                      className="text-textMuted hover:text-red-500 transition-colors w-10 h-10 flex items-center justify-center bg-background rounded-full border border-border-subtle text-lg"
+                      title={t('cart.drawer.item.remove')}
+                      aria-label={t('cart.drawer.item.remove')}
                     >
-                      −
-                    </button>
-                    <span className="text-white font-bold min-w-[32px] text-center text-sm">{item.quantity}</span>
-                    <button 
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="w-8 h-8 rounded-full bg-primary text-black flex items-center justify-center hover:scale-105 transition-transform text-lg"
-                      aria-label={t('cart.drawer.quantity.increase')}
-                    >
-                      +
+                      🗑️
                     </button>
                   </div>
-                  <button 
-                    onClick={() => handleRemove(item.id)}
-                    className="text-textMuted hover:text-red-500 transition-colors w-10 h-10 flex items-center justify-center bg-background rounded-full border border-border-subtle text-lg"
-                    title={t('cart.drawer.item.remove')}
-                    aria-label={t('cart.drawer.item.remove')}
-                  >
-                    🗑️
-                  </button>
-                </div>
-              </div>
-            ))
+                </motion.div>
+              ))}
+            </AnimatePresence>
           )}
         </div>
 

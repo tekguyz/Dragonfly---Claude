@@ -42,7 +42,7 @@ export default function ContactSection() {
   };
 
   return (
-    <section id="contact" className="py-16 md:py-24 px-4 md:px-6 relative">
+    <section id="contact" className="py-16 md:py-24 px-4 md:px-6 relative border-t border-border-subtle">
       {/* Background */}
       <div className="absolute inset-0 z-0" style={{ background: 'radial-gradient(ellipse at 30% 50%, oklch(74% 0.14 80 / 4%) 0%, oklch(4% 0 0) 60%)' }} />
 
@@ -67,7 +67,7 @@ export default function ContactSection() {
                 <div>
                   <div className="text-textMuted text-sm mb-1">{t('contact.label.phone')}</div>
                   <a href={`tel:${BRAND.PHONE_PRIMARY.replace(/\s+/g, '')}`} className="text-white font-bold hover:text-primary transition-colors">
-                    {BRAND.PHONE_PRIMARY}
+                    {BRAND.PHONE_PRIMARY_DISPLAY}
                   </a>
                 </div>
               </div>
@@ -77,7 +77,7 @@ export default function ContactSection() {
                 <div>
                   <div className="text-textMuted text-sm mb-1">{t('contact.label.secondary')}</div>
                   <a href={`tel:${BRAND.PHONE_SECONDARY.replace(/\s+/g, '')}`} className="text-white font-bold hover:text-primary transition-colors">
-                    {BRAND.PHONE_SECONDARY}
+                    {BRAND.PHONE_SECONDARY_DISPLAY}
                   </a>
                 </div>
               </div>

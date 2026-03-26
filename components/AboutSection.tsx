@@ -9,7 +9,7 @@ export default function AboutSection() {
   const { t } = useLanguage();
 
   return (
-    <section id="about" className="py-24 px-4 md:px-6 relative overflow-hidden">
+    <section id="about" className="py-24 px-4 md:px-6 relative overflow-hidden border-t border-border-subtle">
       {/* Background Texture */}
       <div className="absolute inset-0 z-0" style={{ background: 'radial-gradient(ellipse at 70% 50%, oklch(75% 0.12 176 / 4%) 0%, oklch(4% 0 0) 70%)' }} />
 

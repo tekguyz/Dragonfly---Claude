@@ -9,7 +9,7 @@ export default function EventsSection() {
   const { t } = useLanguage();
 
   return (
-    <section id="events" className="relative w-full py-16 md:py-32 px-4 md:px-6">
+    <section id="events" className="relative w-full py-16 md:py-32 px-4 md:px-6 border-t border-border-subtle">
       {/* Background */}
       <div className="absolute inset-0 z-0 bg-surface">
         <div 

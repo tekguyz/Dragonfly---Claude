@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'motion/react';
 import { MENU } from '@/constants/menu';
 import MenuCard from './MenuCard';
 import { BRAND } from '@/constants/brand';
@@ -56,7 +57,10 @@ export default function MenuSection() {
                   {category.items.length}
                 </span>
                 {activeTab === category.id && (
-                  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-8 h-[2px] bg-primary rounded-full animate-fadeIn" />
+                  <motion.div
+                    layoutId="activeTab"
+                    className="absolute bottom-1 left-1/2 -translate-x-1/2 w-8 h-[2px] bg-primary rounded-full"
+                  />
                 )}
               </button>
             ))}

@@ -52,7 +52,7 @@ export default function Gallery() {
   }, [lightboxOpen]);
 
   return (
-    <section id="gallery" className="bg-background py-24 px-6">
+    <section id="gallery" className="bg-background py-24 px-6 border-t border-border-subtle">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">

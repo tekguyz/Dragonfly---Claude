@@ -37,7 +37,7 @@ export default function Hero() {
           {/* Headline */}
           <h1 className="section-heading text-[clamp(2.25rem,8vw,4.5rem)] leading-[1.1] mb-6">
             {t('hero.headline.line1')} <br />
-            <span className="bg-[var(--gradient-teal-gold)] bg-clip-text text-transparent [-webkit-text-fill-color:transparent]">
+            <span className="text-gradient-teal-gold">
               {t('hero.headline.line2')}
             </span>
           </h1>
@@ -83,10 +83,12 @@ export default function Hero() {
 
       {/* Scroll Indicator */}
       <div className="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2 z-10">
-        <div className="w-[1px] h-16 bg-[oklch(75%_0.12_176/20%)] relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-1/3 bg-primary animate-scroll-dot" />
+        <div className="animate-bounce text-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
         </div>
-        <span className="text-primary text-[10px] tracking-[0.2em] font-bold uppercase rotate-90 mt-4">{t('hero.scroll')}</span>
+        <span className="text-primary text-[10px] tracking-[0.2em] font-bold uppercase mt-2">{t('hero.scroll')}</span>
       </div>
 
     </section>
