@@ -21,13 +21,6 @@ export default function Home() {
       <Gallery />
       <EventsSection />
       <ContactSection />
-      <form name="dragonfly-contact" data-netlify="true" hidden>
-        <input type="text" name="name" />
-        <input type="email" name="email" />
-        <input type="tel" name="phone" />
-        <input type="text" name="type" />
-        <textarea name="message"></textarea>
-      </form>
       <ChatWidget />
       <MobileOrderBar />
       <Footer />
