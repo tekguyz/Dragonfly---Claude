@@ -1,0 +1,329 @@
+'use client';
+
+import { useState, useRef, useEffect } from 'react';
+import { X } from 'lucide-react';
+import { COPY } from '@/constants/copy';
+import { BRAND } from '@/constants/brand';
+import { GoogleGenAI } from '@google/genai';
+import { useLanguage } from '@/context/LanguageContext';
+
+type Message = {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+};
+
+const SYSTEM_INSTRUCTION = `You are the friendly and knowledgeable AI assistant for Dragonfly, an upscale Fusion Asian Restaurant at Plaza Farallones, Modulo #3, Chinandega, Nicaragua.
+
+Your personality: warm, helpful, sophisticated but approachable. You're proud of Dragonfly and genuinely excited to help guests.
+
+ESSENTIAL FACTS — always accurate:
+Hours: Open daily, 12:00 PM to 12:00 AM (midnight)
+Primary Phone: +505 8563-9999
+Secondary Phone: +505 2350-1521  
+WhatsApp: https://wa.me/50585639999
+Email: dragonfly_chinandega@hotmail.com
+Address: Plaza Farallones, Modulo #3, Chinandega, Nicaragua
+Instagram: @dragonfly_chinandega
+
+MENU (complete):
+
+SUSHI: Yummy Roll (tuna + crispy wonton, spicy mayo), JB Tempura (sweet salmon tempura), Dragon Roll (shrimp tempura, avocado), Spicy Tuna, Chef's Omakase Specials.
+
+STARTERS: Tuna Nachos (wonton chips + tuna tartare), Copa Camarón (tempura shrimp + spicy mayo), Camarones al Chile (chili-glazed), Gyoza (pan-fried dumplings), Edamame.
+
+MAINS: Corte de Carne (premium Nicaraguan beef), Ribeye (aged, grilled), Chicken Teriyaki (house teriyaki glaze), Salmon Filet (pan-seared, ginger butter).
+
+PIZZA & BURGERS: Dragonfly Pizza (rotating signature), BBQ Chicken Pizza, Dragonfly Burger (house blend + brioche), Wagyu Smash Burger.
+
+DRINKS: Dragon Cocktail (house signature), Japanese Whisky selection, Wine list (red/white/sparkling), Craft beers (local + imported), Mocktails & fresh juices.
+
+KEY SELLING POINTS:
+- Only sushi restaurant in Chinandega (unique)
+- Virtual Stadium with giant screens for live football (unique)
+- Business lunches, private events, group dinners available
+- Outdoor seating available
+- Trendy, cozy, relaxed atmosphere
+- Dragonfly does NOT take orders through the website or this chat. Always direct to WhatsApp or phone for ordering.
+
+RESPONSE RULES:
+1. Reply in the same language the user writes (English or Spanish)
+2. Keep replies concise — under 4 sentences when possible
+3. For prices: say honestly "Prices aren't listed on our site — WhatsApp us for current pricing!"
+4. For reservations: direct to WhatsApp or phone
+5. For ordering: ALWAYS direct to WhatsApp first
+6. If unsure: be honest and suggest calling
+7. Never make up menu items or facts not listed above
+8. Be warm and inviting — you want them to visit!`;
+
+export default function ChatWidget() {
+  const { t, language } = useLanguage();
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Initialize welcome message when language changes or on mount
+  useEffect(() => {
+    if (messages.length === 0) {
+      setMessages([
+        {
+          id: 'welcome',
+          role: 'assistant',
+          content: t('chat.welcome'),
+          timestamp: new Date(),
+        },
+      ]);
+    } else if (messages.length === 1 && messages[0].id === 'welcome') {
+      // Update welcome message if it's the only one and language changes
+      setMessages([
+        {
+          id: 'welcome',
+          role: 'assistant',
+          content: t('chat.welcome'),
+          timestamp: new Date(),
+        },
+      ]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language, t]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isLoading, hasError]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
+
+  const handleSend = async (text: string = inputValue) => {
+    const trimmed = text.trim();
+    if (!trimmed || isLoading) return;
+
+    const userMsg: Message = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: trimmed,
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, userMsg]);
+    setInputValue('');
+    setIsLoading(true);
+    setHasError(false);
+
+    try {
+      const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
+      
+      const history = messages.map(m => ({
+        role: m.role === 'user' ? 'user' : 'model',
+        parts: [{ text: m.content }]
+      }));
+
+      const chat = ai.chats.create({
+        model: 'gemini-3-flash-preview',
+        config: {
+          systemInstruction: SYSTEM_INSTRUCTION + `\n\nIMPORTANT: The user is currently browsing the website in ${language === 'es' ? 'Spanish' : 'English'}. Please respond in ${language === 'es' ? 'Spanish' : 'English'}.`,
+          temperature: 0.7,
+        }
+      });
+
+      // We need to send the history to the chat instance if there are previous messages
+      // Since @google/genai chat doesn't take history in create(), we can just use generateContent
+      // with the full history array.
+      
+      const contents = [
+        ...history,
+        { role: 'user', parts: [{ text: trimmed }] }
+      ];
+
+      const response = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: contents as any,
+        config: {
+          systemInstruction: SYSTEM_INSTRUCTION + `\n\nIMPORTANT: The user is currently browsing the website in ${language === 'es' ? 'Spanish' : 'English'}. Please respond in ${language === 'es' ? 'Spanish' : 'English'}.`,
+          temperature: 0.7,
+        }
+      });
+
+      const replyText = response.text || t('chat.error');
+
+      const assistantMsg: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: replyText,
+        timestamp: new Date(),
+      };
+
+      setMessages((prev) => [...prev, assistantMsg]);
+    } catch (error) {
+      console.error('Chat error:', error);
+      setHasError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleQuickReply = (query: string) => {
+    handleSend(query);
+  };
+
+  return (
+    <div className="fixed z-50 bottom-[90px] md:bottom-8 right-4 md:right-8">
+      {/* Floating Button */}
+      {!isOpen && (
+        <div className="relative group">
+          <button
+            onClick={() => setIsOpen(true)}
+            className="w-[60px] h-[60px] rounded-full bg-primary flex items-center justify-center shadow-lg relative z-10 hover:scale-105 transition-transform"
+            aria-label="Open Chat"
+          >
+            <span className="text-2xl">🐉</span>
+          </button>
+          
+          {/* Pulsing Ring */}
+          <div className="absolute inset-0 rounded-full bg-primary animate-pulseRing -z-10" />
+          
+          {/* Tooltip */}
+          <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-surface border border-border-subtle text-accent text-sm font-medium px-4 py-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+            {t('chat.tooltip')}
+          </div>
+        </div>
+      )}
+
+      {/* Chat Drawer */}
+      {isOpen && (
+        <div className="fixed md:absolute bottom-0 md:bottom-0 right-0 w-full md:w-96 h-[80vh] md:h-[520px] bg-[#0D0D0D] rounded-t-2xl md:rounded-2xl border border-[rgba(0,201,167,0.2)] shadow-[0_25px_50px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 duration-300">
+          {/* Header */}
+          <div className="bg-surface px-5 py-4 flex items-center justify-between border-b border-border-subtle shrink-0">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">🐉</span>
+              <div>
+                <h3 className="font-playfair text-accent font-bold flex items-center gap-2">
+                  {t('chat.title')}
+                  <span className="w-2 h-2 rounded-full bg-green-500" />
+                </h3>
+                <p className="text-textMuted text-[10px] uppercase tracking-wider">{t('chat.powered')}</p>
+              </div>
+            </div>
+            <button onClick={() => setIsOpen(false)} className="text-accent hover:text-white transition-colors p-1">
+              <X size={20} />
+            </button>
+          </div>
+
+          {/* Messages Area */}
+          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
+            {messages.map((msg) => (
+              <div key={msg.id} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                <div className={`flex items-end gap-2 max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                  {msg.role === 'assistant' && (
+                    <span className="text-xl mb-1 shrink-0">🐉</span>
+                  )}
+                  <div className={`px-4 py-3 text-sm ${
+                    msg.role === 'user' 
+                      ? 'bg-primary/20 text-white rounded-2xl rounded-tr-none' 
+                      : 'bg-surface text-white rounded-2xl rounded-tl-none border-l-[3px] border-primary'
+                  }`}>
+                    {msg.content}
+                  </div>
+                </div>
+                <span className="text-textMuted text-[10px] mt-1 mx-8">
+                  {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </span>
+              </div>
+            ))}
+
+            {isLoading && (
+              <div className="flex flex-col items-start">
+                <div className="flex items-end gap-2 max-w-[85%] flex-row">
+                  <span className="text-xl mb-1 shrink-0">🐉</span>
+                  <div className="bg-surface text-white rounded-2xl rounded-tl-none border-l-[3px] border-primary px-4 py-4 flex gap-1">
+                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0s' }} />
+                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
+                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {hasError && (
+              <div className="flex flex-col items-start">
+                <div className="flex items-end gap-2 max-w-[85%] flex-row">
+                  <span className="text-xl mb-1 shrink-0">🐉</span>
+                  <div className="bg-surface text-white rounded-2xl rounded-tl-none border-l-[3px] border-red-500 px-4 py-3 text-sm flex flex-col gap-3">
+                    <p>{t('chat.error')}</p>
+                    <a 
+                      href={BRAND.WHATSAPP_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-primary text-xs px-4 py-2 text-center"
+                    >
+                      {t('chat.whatsapp')}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Quick Replies */}
+            {messages.length === 1 && !isLoading && !hasError && (
+              <div className="flex flex-wrap gap-2 mt-2 ml-8">
+                {['menu', 'hours', 'location'].map((key) => (
+                  <button 
+                    key={key} 
+                    onClick={() => handleQuickReply(t(`chat.quick.${key}.query`))}
+                    className="whitespace-nowrap rounded-full border border-primary/40 text-primary text-xs px-3 py-1.5 hover:bg-primary/10 transition-colors"
+                  >
+                    {t(`chat.quick.${key}.label`)}
+                  </button>
+                ))}
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input Area */}
+          <div className="border-t border-surface px-4 py-3 shrink-0 bg-[#0D0D0D]">
+            <div className="relative">
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend();
+                  }
+                }}
+                placeholder={t('chat.placeholder')}
+                className="w-full bg-surface border border-border-subtle rounded-xl pl-4 pr-12 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors disabled:opacity-50"
+                disabled={isLoading}
+              />
+              <button 
+                onClick={() => handleSend()}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-primary p-2 hover:text-primaryDark transition-colors disabled:opacity-50" 
+                disabled={isLoading || !inputValue.trim()}
+              >
+                ➤
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}
