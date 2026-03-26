@@ -19,13 +19,16 @@ export default function ContactSection() {
     setError('');
 
     const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData.entries());
+    const body = new URLSearchParams();
+    formData.forEach((value, key) => {
+      body.append(key, value as string);
+    });
 
     try {
-      const response = await fetch('/api/contact', {
+      const response = await fetch('/', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString(),
       });
 
       if (!response.ok) throw new Error('Failed to send message');
