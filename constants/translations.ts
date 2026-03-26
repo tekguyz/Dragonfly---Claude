@@ -188,7 +188,7 @@ export const TRANSLATIONS: Record<"en" | "es", Record<string, string>> = {
     // Chat widget
     "chat.tooltip": "Ask Dragonfly AI",
     "chat.title": "Dragonfly Assistant",
-    "chat.powered": "Powered by Gemini AI",
+    "chat.status": "Online Assistant",
     "chat.welcome": "Hello! I'm the Dragonfly AI assistant. How can I help you today?",
     "chat.placeholder": "Ask about our menu...",
     "chat.send": "Send",
@@ -407,7 +407,7 @@ export const TRANSLATIONS: Record<"en" | "es", Record<string, string>> = {
     // Chat widget
     "chat.tooltip": "Preguntar a Dragonfly AI",
     "chat.title": "Asistente Dragonfly",
-    "chat.powered": "Impulsado por Gemini AI",
+    "chat.status": "Asistente en Línea",
     "chat.welcome": "¡Hola! Soy el asistente de IA de Dragonfly. ¿Cómo puedo ayudarte hoy?",
     "chat.placeholder": "Pregunte sobre nuestro menú...",
     "chat.send": "Enviar",

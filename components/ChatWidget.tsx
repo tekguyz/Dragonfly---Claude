@@ -170,7 +170,7 @@ export default function ChatWidget() {
   };
 
   return (
-    <div className="fixed z-50 bottom-[calc(68px+16px+env(safe-area-inset-bottom,0px))] right-4 md:bottom-8 md:right-8">
+    <div className="fixed z-50 bottom-[calc(68px+16px+env(safe-area-inset-bottom,0px))] right-4 md:bottom-6 md:right-6">
       {/* Floating Button */}
       {!isOpen && (
         <div className="relative group">
@@ -194,7 +194,7 @@ export default function ChatWidget() {
 
       {/* Chat Drawer */}
       {isOpen && (
-        <div className="fixed inset-0 md:absolute md:bottom-0 md:right-0 w-full md:w-96 h-[85vh] md:h-[520px] bg-[oklch(4%_0_0)] rounded-t-2xl md:rounded-2xl border border-[oklch(75%_0.12_176/20%)] shadow-[0_25px_50px_oklch(0%_0_0/80%)] flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 duration-300">
+        <div className="fixed inset-0 md:inset-auto md:absolute md:bottom-0 md:right-0 w-full md:w-[440px] h-[85vh] md:h-[650px] bg-[oklch(4%_0_0)] rounded-t-2xl md:rounded-2xl border border-[oklch(75%_0.12_176/20%)] shadow-[0_25px_50px_oklch(0%_0_0/80%)] flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 duration-300">
           {/* Header */}
           <div className="bg-surface px-5 py-4 flex items-center justify-between border-b border-border-subtle shrink-0">
             <div className="flex items-center gap-3">
@@ -204,7 +204,7 @@ export default function ChatWidget() {
                   {t('chat.title')}
                   <span className="w-2 h-2 rounded-full bg-green-500" />
                 </h3>
-                <p className="text-textMuted text-[10px] uppercase tracking-wider">{t('chat.powered')}</p>
+                <p className="text-textMuted text-[10px] uppercase tracking-wider">{t('chat.status')}</p>
               </div>
             </div>
             <button onClick={() => setIsOpen(false)} className="text-accent hover:text-white transition-colors p-1" aria-label="Close chat">
