@@ -170,7 +170,7 @@ export default function ChatWidget() {
   };
 
   return (
-    <div className="fixed z-50 bottom-[90px] md:bottom-8 right-4 md:right-8">
+    <div className="fixed z-50 bottom-[calc(68px+16px+env(safe-area-inset-bottom,0px))] right-4 md:bottom-8 md:right-8">
       {/* Floating Button */}
       {!isOpen && (
         <div className="relative group">
@@ -186,7 +186,7 @@ export default function ChatWidget() {
           <div className="absolute inset-0 rounded-full bg-primary animate-pulseRing -z-10" />
           
           {/* Tooltip */}
-          <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-surface border border-border-subtle text-accent text-sm font-medium px-4 py-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+          <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-surface border border-border-subtle text-accent text-sm font-medium px-4 py-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none hidden md:block">
             {t('chat.tooltip')}
           </div>
         </div>
@@ -194,20 +194,20 @@ export default function ChatWidget() {
 
       {/* Chat Drawer */}
       {isOpen && (
-        <div className="fixed md:absolute bottom-0 md:bottom-0 right-0 w-full md:w-96 h-[80vh] md:h-[520px] bg-[#0D0D0D] rounded-t-2xl md:rounded-2xl border border-[rgba(0,201,167,0.2)] shadow-[0_25px_50px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 duration-300">
+        <div className="fixed inset-0 md:absolute md:bottom-0 md:right-0 w-full md:w-96 h-[85vh] md:h-[520px] bg-[oklch(4%_0_0)] rounded-t-2xl md:rounded-2xl border border-[oklch(75%_0.12_176/20%)] shadow-[0_25px_50px_oklch(0%_0_0/80%)] flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 duration-300">
           {/* Header */}
           <div className="bg-surface px-5 py-4 flex items-center justify-between border-b border-border-subtle shrink-0">
             <div className="flex items-center gap-3">
               <span className="text-2xl">🐉</span>
               <div>
-                <h3 className="font-playfair text-accent font-bold flex items-center gap-2">
+                <h3 className="font-display text-accent font-bold flex items-center gap-2">
                   {t('chat.title')}
                   <span className="w-2 h-2 rounded-full bg-green-500" />
                 </h3>
                 <p className="text-textMuted text-[10px] uppercase tracking-wider">{t('chat.powered')}</p>
               </div>
             </div>
-            <button onClick={() => setIsOpen(false)} className="text-accent hover:text-white transition-colors p-1">
+            <button onClick={() => setIsOpen(false)} className="text-accent hover:text-white transition-colors p-1" aria-label="Close chat">
               <X size={20} />
             </button>
           </div>
@@ -222,7 +222,7 @@ export default function ChatWidget() {
                   )}
                   <div className={`px-4 py-3 text-sm ${
                     msg.role === 'user' 
-                      ? 'bg-primary/20 text-white rounded-2xl rounded-tr-none' 
+                      ? 'bg-teal-500/20 text-teal-400 rounded-2xl rounded-tr-none' 
                       : 'bg-surface text-white rounded-2xl rounded-tl-none border-l-[3px] border-primary'
                   }`}>
                     {msg.content}
@@ -269,7 +269,7 @@ export default function ChatWidget() {
             {/* Quick Replies */}
             {messages.length === 1 && !isLoading && !hasError && (
               <div className="flex flex-wrap gap-2 mt-2 ml-8">
-                {['menu', 'hours', 'location'].map((key) => (
+                {['menu', 'hours', 'location', 'order'].map((key) => (
                   <button 
                     key={key} 
                     onClick={() => handleQuickReply(t(`chat.quick.${key}.query`))}
@@ -284,7 +284,7 @@ export default function ChatWidget() {
           </div>
 
           {/* Input Area */}
-          <div className="border-t border-surface px-4 py-3 shrink-0 bg-[#0D0D0D]">
+          <div className="border-t border-surface px-4 py-3 shrink-0 bg-surface pb-[calc(16px+env(safe-area-inset-bottom,0px))]">
             <div className="relative">
               <input
                 type="text"
@@ -297,7 +297,7 @@ export default function ChatWidget() {
                   }
                 }}
                 placeholder={t('chat.placeholder')}
-                className="w-full bg-surface border border-border-subtle rounded-xl pl-4 pr-12 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors disabled:opacity-50"
+                className="w-full bg-surface border border-border-subtle rounded-xl pl-4 pr-12 py-3 text-base text-white focus:outline-none focus:border-primary transition-colors disabled:opacity-50"
                 disabled={isLoading}
               />
               <button 

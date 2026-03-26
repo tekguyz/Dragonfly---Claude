@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { BRAND } from '@/constants/brand';
 import { Instagram, Search, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import RevealOnScroll from './RevealOnScroll';
 
 const IMAGES = [
   { src: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=800&q=80", alt: "Sushi plating", height: "h-64" },
@@ -64,32 +65,33 @@ export default function Gallery() {
         {/* Masonry Grid */}
         <div className="columns-2 md:columns-3 lg:columns-4 gap-3 space-y-3 mb-16">
           {IMAGES.map((img, idx) => (
-            <div 
-              key={idx} 
-              className={`relative w-full rounded-xl overflow-hidden cursor-pointer group break-inside-avoid ${img.height}`}
-              onClick={() => openLightbox(idx)}
-            >
-              <Image
-                src={img.src}
-                alt={img.alt}
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-110"
-                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              />
-              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <div className="flex flex-col items-center text-primary transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                  <Search size={32} className="mb-2" />
-                  <span className="font-semibold tracking-wider uppercase text-sm">View</span>
+            <RevealOnScroll key={idx} delay={idx * 100}>
+              <div 
+                className={`relative w-full rounded-xl overflow-hidden cursor-pointer group break-inside-avoid ${img.height}`}
+                onClick={() => openLightbox(idx)}
+              >
+                <Image
+                  src={img.src}
+                  alt={img.alt}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                />
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <div className="flex flex-col items-center text-primary transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                    <Search size={32} className="mb-2" />
+                    <span className="font-semibold tracking-wider uppercase text-sm">View</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            </RevealOnScroll>
           ))}
         </div>
 
         {/* Instagram CTA */}
         <div className="glass-card p-10 text-center max-w-2xl mx-auto flex flex-col items-center">
           <Instagram size={48} className="text-accent mb-4" />
-          <h3 className="font-playfair text-2xl text-accent mb-2">@dragonfly_chinandega</h3>
+          <h3 className="font-display text-2xl text-accent mb-2">@dragonfly_chinandega</h3>
           <a
             href={BRAND.INSTAGRAM_URL}
             target="_blank"
@@ -108,20 +110,22 @@ export default function Gallery() {
           onClick={closeLightbox}
         >
           <button 
-            className="absolute top-6 right-6 text-accent hover:text-white transition-colors z-50 p-2"
+            className="absolute top-4 right-4 md:top-6 md:right-6 text-accent hover:text-white transition-colors z-50 w-[44px] h-[44px] flex items-center justify-center bg-black/20 md:bg-transparent rounded-full"
             onClick={closeLightbox}
+            aria-label="Close gallery"
           >
-            <X size={32} />
+            <X size={28} />
           </button>
           
           <button 
-            className="absolute left-4 md:left-10 text-white/50 hover:text-white transition-colors z-50 p-4"
+            className="absolute bottom-6 left-6 md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:left-10 text-white/80 hover:text-white transition-colors z-50 w-[60px] h-[60px] flex items-center justify-center bg-black/50 md:bg-transparent rounded-full md:rounded-none"
             onClick={prevImage}
+            aria-label="Previous image"
           >
-            <ChevronLeft size={48} />
+            <ChevronLeft size={36} className="md:w-12 md:h-12" />
           </button>
 
-          <div className="relative w-full max-w-5xl h-[80vh] mx-16" onClick={(e) => e.stopPropagation()}>
+          <div className="relative w-full max-w-5xl h-[70vh] md:h-[80vh] mx-0 md:mx-16" onClick={(e) => e.stopPropagation()}>
             <Image
               src={IMAGES[currentIndex].src}
               alt={IMAGES[currentIndex].alt}
@@ -133,13 +137,14 @@ export default function Gallery() {
           </div>
 
           <button 
-            className="absolute right-4 md:right-10 text-white/50 hover:text-white transition-colors z-50 p-4"
+            className="absolute bottom-6 right-6 md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:right-10 text-white/80 hover:text-white transition-colors z-50 w-[60px] h-[60px] flex items-center justify-center bg-black/50 md:bg-transparent rounded-full md:rounded-none"
             onClick={nextImage}
+            aria-label="Next image"
           >
-            <ChevronRight size={48} />
+            <ChevronRight size={36} className="md:w-12 md:h-12" />
           </button>
 
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-textMuted font-inter tracking-widest">
+          <div className="absolute bottom-10 md:bottom-8 left-1/2 -translate-x-1/2 text-textMuted font-body tracking-widest z-50 pointer-events-none">
             {currentIndex + 1} / {IMAGES.length}
           </div>
         </div>

@@ -7,12 +7,12 @@ export default function AnnouncementBar() {
   const content = t('announcement.text');
 
   return (
-    <div className="h-[44px] w-full bg-gradient-to-r from-accent via-[#C9A227] to-accent overflow-hidden flex items-center relative">
-      <div className="whitespace-nowrap flex animate-marquee">
-        <span className="text-background font-semibold text-[13px] uppercase tracking-[0.1em] px-4">
+    <div className="h-[44px] w-full bg-gradient-to-r from-accent via-accent-dark to-accent overflow-hidden flex items-center relative">
+      <div className="whitespace-nowrap flex animate-[marquee_20s_linear_infinite] md:animate-[marquee_40s_linear_infinite]">
+        <span className="text-background font-semibold text-[11px] md:text-[13px] uppercase tracking-[0.1em] px-4">
           {content}
         </span>
-        <span className="text-background font-semibold text-[13px] uppercase tracking-[0.1em] px-4">
+        <span className="text-background font-semibold text-[11px] md:text-[13px] uppercase tracking-[0.1em] px-4">
           {content}
         </span>
       </div>

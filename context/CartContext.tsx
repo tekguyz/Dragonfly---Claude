@@ -97,37 +97,37 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [state.items, isMounted]);
 
-  const totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
+  const totalItems = React.useMemo(() => state.items.reduce((total, item) => total + item.quantity, 0), [state.items]);
 
-  const addItem = (item: CartItem) => dispatch({ type: 'ADD_ITEM', payload: item });
-  const removeItem = (id: string) => dispatch({ type: 'REMOVE_ITEM', payload: { id } });
-  const updateQuantity = (id: string, quantity: number) => {
+  const addItem = React.useCallback((item: CartItem) => dispatch({ type: 'ADD_ITEM', payload: item }), []);
+  const removeItem = React.useCallback((id: string) => dispatch({ type: 'REMOVE_ITEM', payload: { id } }), []);
+  const updateQuantity = React.useCallback((id: string, quantity: number) => {
     if (quantity <= 0) {
-      removeItem(id);
+      dispatch({ type: 'REMOVE_ITEM', payload: { id } });
     } else {
       dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity } });
     }
-  };
-  const clearCart = () => dispatch({ type: 'CLEAR_CART' });
-  const isInCart = (id: string) => state.items.some(item => item.id === id);
-  const getQuantity = (id: string) => state.items.find(item => item.id === id)?.quantity || 0;
-  const toggleCart = (isOpen?: boolean) => dispatch({ type: 'TOGGLE_CART', payload: isOpen });
+  }, []);
+  const clearCart = React.useCallback(() => dispatch({ type: 'CLEAR_CART' }), []);
+  const isInCart = React.useCallback((id: string) => state.items.some(item => item.id === id), [state.items]);
+  const getQuantity = React.useCallback((id: string) => state.items.find(item => item.id === id)?.quantity || 0, [state.items]);
+  const toggleCart = React.useCallback((isOpen?: boolean) => dispatch({ type: 'TOGGLE_CART', payload: isOpen }), []);
+
+  const value = React.useMemo(() => ({
+    items: state.items,
+    totalItems,
+    isOpen: state.isOpen,
+    addItem,
+    removeItem,
+    updateQuantity,
+    clearCart,
+    isInCart,
+    getQuantity,
+    toggleCart,
+  }), [state.items, totalItems, state.isOpen, addItem, removeItem, updateQuantity, clearCart, isInCart, getQuantity, toggleCart]);
 
   return (
-    <CartContext.Provider
-      value={{
-        items: state.items,
-        totalItems,
-        isOpen: state.isOpen,
-        addItem,
-        removeItem,
-        updateQuantity,
-        clearCart,
-        isInCart,
-        getQuantity,
-        toggleCart,
-      }}
-    >
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   );

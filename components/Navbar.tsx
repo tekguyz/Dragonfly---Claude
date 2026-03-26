@@ -5,20 +5,16 @@ import Link from 'next/link';
 import { BRAND } from '@/constants/brand';
 import { Instagram, Facebook } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import { useScrollPosition } from '@/hooks/useScrollPosition';
+import CartButton from '@/components/CartButton';
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
+  const { scrollY, direction } = useScrollPosition();
+  const scrolled = scrollY > 50;
+  const hidden = direction === 'down' && scrollY > 100;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
   const { t, language, setLanguage } = useLanguage();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -51,21 +47,23 @@ export default function Navbar() {
     <>
       <nav
         className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+          hidden ? '-translate-y-full' : 'translate-y-0'
+        } ${
           scrolled
-            ? 'bg-[rgba(10,10,10,0.85)] backdrop-blur-[20px] border-b border-border-subtle py-3'
-            : 'bg-transparent py-5'
+            ? 'bg-[oklch(4%_0_0/85%)] backdrop-blur-[20px] border-b border-border-subtle py-3'
+            : 'bg-transparent py-3 md:py-5'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-between h-[40px] md:h-auto">
           {/* Left: Logo */}
-          <Link href="/" className="flex flex-col items-start group">
+          <Link href="/" className="flex flex-col items-start group max-w-[calc(100%-120px)]">
             <div className="flex items-center gap-2">
               <span className="text-2xl">🐉</span>
-              <span className="font-playfair text-accent tracking-[0.15em] text-xl font-bold uppercase">
+              <span className="font-display text-accent tracking-[0.15em] text-lg md:text-xl font-bold uppercase truncate">
                 {BRAND.BUSINESS_NAME}
               </span>
             </div>
-            <span className="text-primary text-[10px] tracking-widest mt-0.5 ml-8">
+            <span className="hidden sm:block text-primary text-[10px] tracking-widest mt-0.5 ml-8">
               {BRAND.TAGLINE}
             </span>
           </Link>
@@ -91,20 +89,20 @@ export default function Navbar() {
           </div>
 
           {/* Right: CTA & Mobile Toggle */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4 z-[70]">
             {/* Language Toggle */}
             <div 
               role="radiogroup" 
               aria-label="Select language"
-              className="hidden md:flex items-center w-[80px] h-[32px] bg-surface-hover border border-border rounded-full p-[2px] cursor-pointer"
+              className="flex items-center w-[70px] md:w-[80px] h-[28px] md:h-[32px] bg-surface-hover border border-border rounded-full p-[2px] cursor-pointer"
             >
               <button
                 role="radio"
                 aria-checked={language === 'en'}
                 onClick={() => setLanguage('en')}
-                className={`flex-1 rounded-full text-xs font-bold flex items-center justify-center transition-all duration-250 ease-in-out h-full ${
+                className={`flex-1 rounded-full text-[10px] md:text-xs font-bold flex items-center justify-center transition-all duration-250 ease-in-out h-full ${
                   language === 'en' 
-                    ? 'bg-accent text-[#0a0a0a]' 
+                    ? 'bg-accent text-background' 
                     : 'bg-transparent text-text-muted hover:text-text-primary'
                 }`}
               >
@@ -114,9 +112,9 @@ export default function Navbar() {
                 role="radio"
                 aria-checked={language === 'es'}
                 onClick={() => setLanguage('es')}
-                className={`flex-1 rounded-full text-xs font-bold flex items-center justify-center transition-all duration-250 ease-in-out h-full ${
+                className={`flex-1 rounded-full text-[10px] md:text-xs font-bold flex items-center justify-center transition-all duration-250 ease-in-out h-full ${
                   language === 'es' 
-                    ? 'bg-accent text-[#0a0a0a]' 
+                    ? 'bg-accent text-background' 
                     : 'bg-transparent text-text-muted hover:text-text-primary'
                 }`}
               >
@@ -133,93 +131,85 @@ export default function Navbar() {
               📲 {t('nav.orderWhatsapp')}
             </a>
             
+            <div className="md:hidden">
+              <CartButton variant="navbar" />
+            </div>
+
             <button
-              className="md:hidden text-textPrimary p-2"
+              className="md:hidden w-[44px] h-[44px] flex items-center justify-center text-accent relative"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle menu"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                {mobileMenuOpen ? (
-                  <path d="M18 6L6 18M6 6l12 12" className="animate-in fade-in duration-300" />
-                ) : (
-                  <path d="M3 12h18M3 6h18M3 18h18" className="animate-in fade-in duration-300" />
-                )}
-              </svg>
+              <div className="relative w-6 h-5">
+                <span className={`absolute left-0 w-full h-0.5 bg-current transition-all duration-300 ${mobileMenuOpen ? 'top-2 rotate-45' : 'top-0'}`} />
+                <span className={`absolute left-0 top-2 w-full h-0.5 bg-current transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'}`} />
+                <span className={`absolute left-0 w-full h-0.5 bg-current transition-all duration-300 ${mobileMenuOpen ? 'top-2 -rotate-45' : 'top-4'}`} />
+              </div>
             </button>
           </div>
         </div>
       </nav>
 
       {/* Mobile Menu Overlay */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-[rgba(10,10,10,0.97)] backdrop-blur-md flex flex-col items-center justify-center">
-          <div className="flex flex-col items-center gap-8 w-full px-6">
-            {navLinks.map((link, index) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="font-playfair text-accent text-3xl opacity-0 animate-fadeInUp"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                {link.name}
-              </Link>
-            ))}
-            
-            <a
-              href={BRAND.WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 btn-primary px-8 py-3 text-lg opacity-0 animate-fadeInUp"
-              style={{ animationDelay: `${navLinks.length * 0.1}s` }}
+      <div 
+        className={`fixed inset-0 z-[60] bg-[oklch(4%_0_0/97%)] flex flex-col items-center justify-center gap-8 transition-all duration-350 ease-in-out md:hidden ${
+          mobileMenuOpen ? 'opacity-100 translate-y-0 pointer-events-auto visible' : 'opacity-0 -translate-y-full pointer-events-none invisible'
+        }`}
+      >
+        <div className="flex flex-col items-center gap-4 w-full px-6">
+          {navLinks.map((link) => (
+            <Link
+              key={link.name}
+              href={link.href}
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-accent font-display text-[clamp(1.75rem,5vw,2.25rem)] font-bold py-3 px-6 tracking-[0.05em] transition-all duration-200 border-l-0 hover:border-l-[3px] hover:border-primary hover:pl-10"
             >
-              📲 {t('nav.orderWhatsapp')}
-            </a>
-
-            {/* Mobile Language Toggle */}
-            <div 
-              role="radiogroup" 
-              aria-label="Select language"
-              className="flex items-center w-[80px] h-[32px] bg-surface-hover border border-border rounded-full p-[2px] cursor-pointer mt-8 opacity-0 animate-fadeInUp"
-              style={{ animationDelay: `${(navLinks.length + 0.5) * 0.1}s` }}
-            >
-              <button
-                role="radio"
-                aria-checked={language === 'en'}
-                onClick={() => setLanguage('en')}
-                className={`flex-1 rounded-full text-xs font-bold flex items-center justify-center transition-all duration-250 ease-in-out h-full ${
-                  language === 'en' 
-                    ? 'bg-accent text-[#0a0a0a]' 
-                    : 'bg-transparent text-text-muted hover:text-text-primary'
-                }`}
-              >
-                EN
-              </button>
-              <button
-                role="radio"
-                aria-checked={language === 'es'}
-                onClick={() => setLanguage('es')}
-                className={`flex-1 rounded-full text-xs font-bold flex items-center justify-center transition-all duration-250 ease-in-out h-full ${
-                  language === 'es' 
-                    ? 'bg-accent text-[#0a0a0a]' 
-                    : 'bg-transparent text-text-muted hover:text-text-primary'
-                }`}
-              >
-                ES
-              </button>
-            </div>
-
-            <div 
-              className="flex gap-6 mt-6 opacity-0 animate-fadeInUp"
-              style={{ animationDelay: `${(navLinks.length + 1) * 0.1}s` }}
-            >
-              <a href={BRAND.INSTAGRAM_URL} className="text-accent hover:text-primary transition-colors"><Instagram size={24} /></a>
-              <a href={BRAND.FACEBOOK_URL} className="text-accent hover:text-primary transition-colors"><Facebook size={24} /></a>
-            </div>
-          </div>
+              {link.name}
+            </Link>
+          ))}
         </div>
-      )}
-      
+        
+        <div className="absolute bottom-10 flex flex-col items-center gap-6">
+          {/* Mobile Language Toggle */}
+          <div 
+            role="radiogroup" 
+            aria-label="Select language"
+            className="flex items-center w-[80px] h-[32px] bg-surface-hover border border-border rounded-full p-[2px] cursor-pointer"
+          >
+            <button
+              role="radio"
+              aria-checked={language === 'en'}
+              onClick={() => setLanguage('en')}
+              className={`flex-1 rounded-full text-xs font-bold flex items-center justify-center transition-all duration-250 ease-in-out h-full ${
+                language === 'en' 
+                  ? 'bg-accent text-background' 
+                  : 'bg-transparent text-text-muted hover:text-text-primary'
+              }`}
+            >
+              EN
+            </button>
+            <button
+              role="radio"
+              aria-checked={language === 'es'}
+              onClick={() => setLanguage('es')}
+              className={`flex-1 rounded-full text-xs font-bold flex items-center justify-center transition-all duration-250 ease-in-out h-full ${
+                language === 'es' 
+                  ? 'bg-accent text-background' 
+                  : 'bg-transparent text-text-muted hover:text-text-primary'
+              }`}
+            >
+              ES
+            </button>
+          </div>
+
+          <div className="flex gap-6">
+            <a href={BRAND.INSTAGRAM_URL} className="text-primary hover:text-accent transition-colors w-[44px] h-[44px] flex items-center justify-center"><Instagram size={24} /></a>
+            <a href={BRAND.FACEBOOK_URL} className="text-primary hover:text-accent transition-colors w-[44px] h-[44px] flex items-center justify-center"><Facebook size={24} /></a>
+          </div>
+          
+          <p className="text-text-muted text-sm">{BRAND.PHONE_PRIMARY_DISPLAY}</p>
+        </div>
+      </div>
     </>
   );
 }

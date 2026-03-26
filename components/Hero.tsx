@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { BRAND } from '@/constants/brand';
 import { useLanguage } from '@/context/LanguageContext';
+import RevealOnScroll from './RevealOnScroll';
 
 export default function Hero() {
   const { t } = useLanguage();
@@ -17,41 +18,43 @@ export default function Hero() {
           alt="Dragonfly Sushi"
           fill
           priority
-          className="object-cover"
+          className="object-cover object-center"
           sizes="100vw"
         />
         {/* Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[rgba(10,10,10,0.95)] via-[rgba(10,10,10,0.5)] to-[rgba(10,10,10,0.2)]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] to-transparent h-full w-full" style={{ background: 'linear-gradient(to top, #0A0A0A 0%, transparent 40%)' }} />
+        <div className="absolute inset-0 bg-gradient-to-r from-[oklch(4%_0_0/95%)] via-[oklch(4%_0_0/50%)] to-[oklch(4%_0_0/20%)]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[oklch(4%_0_0)] to-transparent h-full w-full" style={{ background: 'linear-gradient(to top, oklch(4% 0 0) 0%, transparent 40%)' }} />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full flex flex-col md:items-start items-center text-center md:text-left pt-20">
+      <RevealOnScroll delay={100} className="relative z-10 max-w-7xl mx-auto px-6 w-full flex flex-col md:items-start items-center text-center md:text-left pt-20">
         <div className="max-w-[700px]">
           {/* Eyebrow */}
-          <div className="inline-block px-4 py-1.5 rounded-full border border-[rgba(212,175,55,0.4)] bg-[rgba(212,175,55,0.08)] text-accent text-xs font-semibold tracking-wider mb-6 uppercase">
+          <div className="inline-block px-4 py-1.5 rounded-full border border-[oklch(74%_0.14_80/40%)] bg-[oklch(74%_0.14_80/8%)] text-accent text-xs font-semibold tracking-wider mb-6 uppercase">
             ✦ {t('hero.eyebrow')}
           </div>
 
           {/* Headline */}
-          <h1 className="section-heading text-[42px] md:text-[72px] leading-[1.1] mb-6">
+          <h1 className="section-heading text-[clamp(2.25rem,8vw,4.5rem)] leading-[1.1] mb-6">
             {t('hero.headline.line1')} <br />
-            <span className="bg-gradient-to-br from-accent to-primary bg-clip-text text-transparent">{t('hero.headline.line2')}</span>
+            <span className="bg-[var(--gradient-teal-gold)] bg-clip-text text-transparent [-webkit-text-fill-color:transparent]">
+              {t('hero.headline.line2')}
+            </span>
           </h1>
 
           {/* Divider */}
           <div className="w-10 h-[2px] bg-primary mb-6 mx-auto md:mx-0" />
 
           {/* Subheadline */}
-          <p className="font-inter text-lg text-textMuted mb-10">
+          <p className="font-body text-lg text-textMuted mb-10">
             {t('hero.subheadline')}
           </p>
 
           {/* CTA Row */}
-          <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mb-12">
+          <div className="flex flex-col min-[380px]:flex-row items-center justify-center md:justify-start gap-4 mb-12 w-full min-[380px]:w-auto">
             <Link
               href="#menu"
-              className="btn-primary px-8 py-4"
+              className="btn-primary px-8 py-4 w-full min-[380px]:w-auto text-center"
             >
               📖 {t('hero.cta.menu')}
             </Link>
@@ -59,14 +62,14 @@ export default function Hero() {
               href={BRAND.WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-outline-gold px-8 py-4"
+              className="btn-outline-gold px-8 py-4 w-full min-[380px]:w-auto text-center"
             >
               📲 {t('hero.cta.whatsapp')}
             </a>
           </div>
 
           {/* Trust Badges */}
-          <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-3 text-sm text-textMuted font-inter">
+          <div className="grid grid-cols-2 md:flex md:flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-3 text-sm text-textMuted font-body text-left md:text-center">
             <span className="flex items-center gap-2">⭐ {t('hero.badge.rated')}</span>
             <span className="hidden md:inline-block w-1 h-1 rounded-full bg-primary" />
             <span className="flex items-center gap-2">🍣 {t('hero.badge.sushi')}</span>
@@ -76,12 +79,12 @@ export default function Hero() {
             <span className="flex items-center gap-2">📍 {t('hero.badge.location')}</span>
           </div>
         </div>
-      </div>
+      </RevealOnScroll>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10">
-        <div className="w-[1px] h-16 bg-[rgba(0,201,167,0.2)] relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-1/2 bg-primary animate-scrollDown" />
+      <div className="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2 z-10">
+        <div className="w-[1px] h-16 bg-[oklch(75%_0.12_176/20%)] relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1/3 bg-primary animate-scroll-dot" />
         </div>
         <span className="text-primary text-[10px] tracking-[0.2em] font-bold uppercase rotate-90 mt-4">{t('hero.scroll')}</span>
       </div>

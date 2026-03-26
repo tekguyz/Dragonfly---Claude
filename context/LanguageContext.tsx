@@ -40,8 +40,15 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     setLanguageState(lang);
     if (typeof window !== 'undefined') {
       localStorage.setItem('dragonfly-lang', lang);
+      document.documentElement.lang = lang;
     }
   };
+
+  useEffect(() => {
+    if (isMounted && typeof window !== 'undefined') {
+      document.documentElement.lang = language;
+    }
+  }, [language, isMounted]);
 
   const t = (key: string): string => {
     // During SSR, default to 'en' to avoid hydration mismatch
