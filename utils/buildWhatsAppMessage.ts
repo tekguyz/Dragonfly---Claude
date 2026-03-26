@@ -1,21 +1,21 @@
 import type { CartItem } from "@/context/CartContext"
 
 const CATEGORY_EMOJI: Record<string, string> = {
-  "Sushi":           "\uD83C\uDF63",
-  "Appetizers":      "\uD83E\uDD57",
-  "Mains":           "\uD83E\uDD69",
-  "Pizza & Burgers": "\uD83C\uDF55",
-  "Drinks":          "\uD83C\uDF79",
+  "Sushi":           "🍣",
+  "Appetizers":      "🥗",
+  "Mains":           "🥩",
+  "Pizza & Burgers": "🍕",
+  "Drinks":          "🍹",
 }
 
 export const getCategoryEmoji = (category: string): string => {
   const cat = category.toLowerCase();
-  if (cat.includes('sushi')) return "\uD83C\uDF63";
-  if (cat.includes('starter') || cat.includes('appetizer')) return "\uD83E\uDD57";
-  if (cat.includes('main')) return "\uD83E\uDD69";
-  if (cat.includes('pizza') || cat.includes('burger')) return "\uD83C\uDF55";
-  if (cat.includes('drink')) return "\uD83C\uDF79";
-  return "\uD83C\uDF7D";
+  if (cat.includes('sushi')) return "🍣";
+  if (cat.includes('starter') || cat.includes('appetizer')) return "🥗";
+  if (cat.includes('main')) return "🥩";
+  if (cat.includes('pizza') || cat.includes('burger')) return "🍕";
+  if (cat.includes('drink')) return "🍹";
+  return "🍽️";
 }
 
 export function buildWhatsAppMessage(
@@ -23,11 +23,11 @@ export function buildWhatsAppMessage(
   customerName?: string,
   language: 'en' | 'es' = 'es'
 ): string {
-  const divider = "---------------------"
+  const divider = "────────────────────"
   
   const itemLines = items
     .map(item => 
-      `${getCategoryEmoji(item.category)} ${item.name} x ${item.quantity}`
+      `${getCategoryEmoji(item.category)} *${item.name}* x ${item.quantity}`
     )
     .join("\n")
 
@@ -36,14 +36,14 @@ export function buildWhatsAppMessage(
   )
 
   const nameLine = customerName?.trim()
-    ? `\n${language === 'es' ? 'Nombre' : 'Name'}: *${customerName.trim()}*`
+    ? `\n👤 *${language === 'es' ? 'Cliente' : 'Customer'}:* ${customerName.trim()}`
     : ""
 
   const message = language === 'es' ? [
-    "*¡Hola Dragonfly!* \uD83D\uDC09",
+    "*¡Hola Dragonfly!* 🐉",
     "Me gustaría hacer un pedido:",
     "",
-    "*DETALLES DEL PEDIDO*",
+    "📋 *DETALLES DEL PEDIDO*",
     divider,
     itemLines,
     divider,
@@ -51,12 +51,12 @@ export function buildWhatsAppMessage(
     nameLine,
     "",
     "Por favor confirmen disponibilidad y precios.",
-    "¡Gracias! \uD83D\uDE4F"
+    "¡Gracias! 🙏"
   ] : [
-    "*Hello Dragonfly!* \uD83D\uDC09",
+    "*Hello Dragonfly!* 🐉",
     "I'd like to place an order:",
     "",
-    "*ORDER DETAILS*",
+    "📋 *ORDER DETAILS*",
     divider,
     itemLines,
     divider,
@@ -64,7 +64,7 @@ export function buildWhatsAppMessage(
     nameLine,
     "",
     "Please confirm availability and pricing.",
-    "Thank you! \uD83D\uDE4F"
+    "Thank you! 🙏"
   ]
 
   return message.filter(line => line !== null).join("\n")

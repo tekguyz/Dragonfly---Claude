@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   description: COPY.META_DESCRIPTION,
   icons: {
     icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐉</text></svg>",
-    apple: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=180&h=180&fit=crop&q=80',
+    apple: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=180&h=180&fit=crop&q=80',
   },
   openGraph: {
     title: COPY.META_TITLE,
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     siteName: BRAND.BUSINESS_NAME,
     images: [
       {
-        url: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=1200&h=630&fit=crop&q=80', // High quality sushi image for OG
+        url: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=1200&h=630&fit=crop&q=80', // High quality moody restaurant interior
         width: 1200,
         height: 630,
         alt: `${BRAND.BUSINESS_NAME} Fusion Asian Restaurant`,
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: COPY.META_TITLE,
     description: COPY.META_DESCRIPTION,
-    images: ['https://images.unsplash.com/photo-1553621042-f6e147245754?w=1200&h=630&fit=crop&q=80'],
+    images: ['https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=1200&h=630&fit=crop&q=80'],
   },
 };
 

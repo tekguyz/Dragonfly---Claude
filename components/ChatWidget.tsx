@@ -200,11 +200,13 @@ export default function ChatWidget() {
             <div className="flex items-center gap-3">
               <span className="text-2xl">🐉</span>
               <div>
-                <h3 className="font-display text-accent font-bold flex items-center gap-2">
+                <h3 className="font-display text-accent font-bold">
                   {t('chat.title')}
-                  <span className="w-2 h-2 rounded-full bg-green-500" />
                 </h3>
-                <p className="text-textMuted text-[10px] uppercase tracking-wider">{t('chat.status')}</p>
+                <p className="text-textMuted text-[10px] uppercase tracking-wider flex items-center gap-1.5">
+                  {t('chat.status')}
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                </p>
               </div>
             </div>
             <button onClick={() => setIsOpen(false)} className="text-accent hover:text-white transition-colors p-1" aria-label="Close chat">
