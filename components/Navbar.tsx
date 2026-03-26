@@ -94,7 +94,7 @@ export default function Navbar() {
             <div 
               role="radiogroup" 
               aria-label="Select language"
-              className="flex items-center w-[70px] md:w-[80px] h-[28px] md:h-[32px] bg-surface-hover border border-border rounded-full p-[2px] cursor-pointer"
+              className="hidden md:flex items-center w-[70px] md:w-[80px] h-[28px] md:h-[32px] bg-surface-hover border border-border rounded-full p-[2px] cursor-pointer"
             >
               <button
                 role="radio"
@@ -152,11 +152,11 @@ export default function Navbar() {
 
       {/* Mobile Menu Overlay */}
       <div 
-        className={`fixed inset-0 z-[60] bg-[oklch(4%_0_0/97%)] flex flex-col items-center justify-center gap-8 transition-all duration-350 ease-in-out md:hidden ${
+        className={`fixed inset-0 z-[60] bg-[oklch(4%_0_0/97%)] flex flex-col items-center justify-start overflow-y-auto pt-28 pb-12 gap-12 transition-all duration-350 ease-in-out md:hidden ${
           mobileMenuOpen ? 'opacity-100 translate-y-0 pointer-events-auto visible' : 'opacity-0 -translate-y-full pointer-events-none invisible'
         }`}
       >
-        <div className="flex flex-col items-center gap-4 w-full px-6">
+        <div className="flex flex-col items-center gap-4 w-full px-6 shrink-0">
           {navLinks.map((link) => (
             <Link
               key={link.name}
@@ -169,12 +169,12 @@ export default function Navbar() {
           ))}
         </div>
         
-        <div className="absolute bottom-10 flex flex-col items-center gap-6">
+        <div className="flex flex-col items-center gap-8 pt-8 pb-4 shrink-0 mt-auto">
           {/* Mobile Language Toggle */}
           <div 
             role="radiogroup" 
             aria-label="Select language"
-            className="flex items-center w-[80px] h-[32px] bg-surface-hover border border-border rounded-full p-[2px] cursor-pointer"
+            className="flex items-center w-[90px] h-[36px] bg-surface-hover border border-border rounded-full p-[2px] cursor-pointer"
           >
             <button
               role="radio"

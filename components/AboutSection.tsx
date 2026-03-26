@@ -18,11 +18,12 @@ export default function AboutSection() {
         <RevealOnScroll delay={100} className="w-full lg:w-[45%] relative">
           <div className="relative aspect-[4/5] w-full rounded-xl md:rounded-2xl overflow-hidden shadow-2xl">
             <Image
-              src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80"
+              src="https://i.ibb.co/FLzZcbBn/res.jpg"
               alt="Dragonfly Interior"
               fill
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 45vw"
+              priority
             />
           </div>
           <div className="absolute -bottom-6 -right-6 w-[200px] h-[200px] rounded-xl overflow-hidden border-4 border-background shadow-2xl hidden md:block">

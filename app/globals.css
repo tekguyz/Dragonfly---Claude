@@ -324,6 +324,12 @@ body {
   }
   --animate-pulseRing: pulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 
+  @keyframes pulseRingGold {
+    0% { box-shadow: 0 0 0 0 oklch(74% 0.14 80 / 40%); }
+    100% { box-shadow: 0 0 0 12px oklch(74% 0.14 80 / 0%); }
+  }
+  --animate-pulseRingGold: pulseRingGold 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
   @keyframes bounceIn {
     0% { transform: scale(0); }
     50% { transform: scale(1.25); }
