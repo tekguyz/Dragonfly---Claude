@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import { COPY } from '@/constants/copy';
@@ -21,6 +21,10 @@ const inter = Inter({
   variable: "--next-font-body",
   display: "swap",
 })
+
+export const viewport: Viewport = {
+  themeColor: '#0a0a0a',
+}
 
 export const metadata: Metadata = {
   title: {

@@ -14,7 +14,7 @@ interface MenuCardProps {
 export default function MenuCard({ item }: MenuCardProps) {
   const { addItem, removeItem, updateQuantity, getQuantity, isInCart } = useCart();
   const [isAdded, setIsAdded] = useState(false);
-  const { language } = useLanguage();
+  const { t, language } = useLanguage();
 
   const name = language === 'es' ? (item.nameEs || item.name) : item.name;
   const description = language === 'es' ? (item.descriptionEs || item.description) : item.description;
@@ -91,7 +91,7 @@ export default function MenuCard({ item }: MenuCardProps) {
                 ${isAdded ? 'bg-primary-dark text-black' : 'bg-primary text-black hover:bg-primary-dark'}
               `}
             >
-              {isAdded ? '✓ Added!' : '+ Add to Order'}
+              {isAdded ? t('cart.card.added') : t('cart.card.add')}
             </button>
           ) : (
             <div className="flex items-center w-full h-[40px] animate-fadeIn">

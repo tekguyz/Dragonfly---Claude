@@ -124,7 +124,7 @@ export default function ContactSection() {
                 <CheckCircle2 size={64} className="text-primary mb-6" />
                 <h3 className="gold-heading text-3xl mb-4">{t('contact.form.success.heading')}</h3>
                 <p className="text-textMuted mb-8">
-                  {t('contact.form.success.text')}
+                  {t('contact.form.success.body')}
                 </p>
                 <a
                   href={BRAND.WHATSAPP_URL}
@@ -148,7 +148,7 @@ export default function ContactSection() {
                 </p>
 
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-textMuted mb-2">{t('contact.form.name')} *</label>
+                  <label htmlFor="name" className="block text-sm font-medium text-textMuted mb-2">{t('contact.form.name')}</label>
                   <input 
                     type="text" 
                     id="name" 
@@ -159,7 +159,7 @@ export default function ContactSection() {
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-textMuted mb-2">{t('contact.form.email')} *</label>
+                  <label htmlFor="email" className="block text-sm font-medium text-textMuted mb-2">{t('contact.form.email')}</label>
                   <input 
                     type="email" 
                     id="email" 
@@ -175,6 +175,7 @@ export default function ContactSection() {
                     type="tel" 
                     id="phone" 
                     name="phone" 
+                    required
                     className="w-full bg-background border border-border-subtle rounded-xl px-4 py-3 min-h-[48px] text-white input-focus"
                   />
                 </div>
@@ -195,7 +196,7 @@ export default function ContactSection() {
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-textMuted mb-2">{t('contact.form.message')} *</label>
+                  <label htmlFor="message" className="block text-sm font-medium text-textMuted mb-2">{t('contact.form.message')}</label>
                   <textarea 
                     id="message" 
                     name="message" 
